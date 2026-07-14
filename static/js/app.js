@@ -144,6 +144,57 @@ function bindHeaderControls() {
       closeMobileMenu();
     });
   });
+  // Mobile Links Click Event Listeners
+  const mLoginBtn = document.getElementById('mobile-client-login-btn');
+  if (mLoginBtn) {
+    mLoginBtn.addEventListener('click', () => {
+      window.AetherRouter.navigateTo('login');
+      closeMobileMenu();
+    });
+  }
+
+  const mNotifBtn = document.getElementById('mobile-client-notif-link');
+  if (mNotifBtn) {
+    mNotifBtn.addEventListener('click', () => {
+      window.AetherRouter.navigateTo('notifications');
+      closeMobileMenu();
+    });
+  }
+
+  const mLogoutBtn = document.getElementById('mobile-client-logout-btn');
+  if (mLogoutBtn) {
+    mLogoutBtn.addEventListener('click', () => {
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+      fetch('/api/accounts/logout/', {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken') || ''
+        }
+      })
+      .finally(() => {
+        window.AetherClientLoggedIn = false;
+        window.AetherClientEmail = null;
+        window.AetherClientName = null;
+        if (window.globalPollingInterval) clearInterval(window.globalPollingInterval);
+        window.updateHeaderAuthUI();
+        window.AetherRouter.navigateTo('home');
+        closeMobileMenu();
+      });
+    });
+  }
 }
 
 function closeMobileMenu() {
@@ -224,35 +275,10 @@ window.updateHeaderAuthUI = function() {
     if (mNotif) {
       mNotif.style.display = 'block';
       mNotif.textContent = isAr ? 'تنبيهاتي والرسائل' : 'My Requests';
-      const newNotif = mNotif.cloneNode(true);
-      mNotif.parentNode.replaceChild(newNotif, mNotif);
-      newNotif.addEventListener('click', () => {
-        window.AetherRouter.navigateTo('notifications');
-        closeMobileMenu();
-      });
     }
     if (mLogout) {
       mLogout.style.display = 'block';
       mLogout.textContent = isAr ? 'خروج' : 'Logout';
-      const newLogout = mLogout.cloneNode(true);
-      mLogout.parentNode.replaceChild(newLogout, mLogout);
-      newLogout.addEventListener('click', () => {
-        fetch('/api/accounts/logout/', {
-          method: 'POST',
-          headers: {
-            'X-CSRFToken': getCookie('csrftoken') || ''
-          }
-        })
-        .finally(() => {
-          window.AetherClientLoggedIn = false;
-          window.AetherClientEmail = null;
-          window.AetherClientName = null;
-          if (window.globalPollingInterval) clearInterval(window.globalPollingInterval);
-          window.updateHeaderAuthUI();
-          window.AetherRouter.navigateTo('home');
-          closeMobileMenu();
-        });
-      });
     }
 
     wrapper.innerHTML = `
@@ -321,12 +347,6 @@ window.updateHeaderAuthUI = function() {
     if (mLogin) {
       mLogin.style.display = 'block';
       mLogin.textContent = isAr ? 'تسجيل دخول' : 'Login';
-      const newLogin = mLogin.cloneNode(true);
-      mLogin.parentNode.replaceChild(newLogin, mLogin);
-      newLogin.addEventListener('click', () => {
-        window.AetherRouter.navigateTo('login');
-        closeMobileMenu();
-      });
     }
 
     wrapper.innerHTML = `

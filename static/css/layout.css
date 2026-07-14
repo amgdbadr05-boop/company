@@ -497,6 +497,10 @@
   #nav-client-logout-btn {
     display: none !important;
   }
+  
+  .mobile-auth-link {
+    display: none;
+  }
 
   .footer-grid {
     grid-template-columns: 1fr;
