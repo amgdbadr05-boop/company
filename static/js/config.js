@@ -16,7 +16,6 @@ window.AetherConfig = {
     PROJECTS: 'projects',
     PRICING: 'pricing',
     TEAM: 'team',
-    TESTIMONIALS: 'testimonials',
     FAQ: 'faq',
     BLOG: 'blog',
     CONTACT: 'contact',
