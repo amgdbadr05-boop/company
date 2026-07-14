@@ -148,7 +148,10 @@ window.AetherPages.quote = {
                   </div>
                   <div class="form-group">
                     <label class="form-label">${isAr ? 'رقم الهاتف' : 'Phone Number'}</label>
-                    <input type="tel" id="wizard-phone" class="form-control" required placeholder="+62 0812-1475-0878">
+                    <div style="display: flex; gap: 10px;">
+                      <input type="text" id="wizard-country-code" class="form-control" required placeholder="+62" style="width: 85px; text-align: center; font-family: var(--font-en);">
+                      <input type="tel" id="wizard-phone" class="form-control" style="flex: 1;" required placeholder="0812-1475-0878">
+                    </div>
                   </div>
                   <div class="form-group">
                     <label class="form-label">${isAr ? 'رابط ملف التصميم Figma (اختياري)' : 'Figma Link (Optional)'}</label>
@@ -156,7 +159,7 @@ window.AetherPages.quote = {
                   </div>
                   <div class="form-group">
                     <label class="form-label">${isAr ? 'تفاصيل إضافية للمشروع' : 'Bespoke Requirements Context'}</label>
-                    <textarea id="wizard-notes" class="form-control" rows="3" placeholder="${isAr ? 'اكتب باختصار متطلبات الواجهة للشركة...' : 'Briefly describe your objectives...'}" style="resize: none;"></textarea>
+                    <textarea id="wizard-notes" class="form-control" rows="3" required placeholder="${isAr ? 'اكتب باختصار متطلبات الواجهة للشركة...' : 'Briefly describe your objectives...'}" style="resize: none;"></textarea>
                   </div>
                   
                   <div id="wizard-status" style="margin-bottom: 1.5rem; display: none; font-size: 0.95rem; font-weight: 600;"></div>
@@ -321,7 +324,9 @@ window.AetherPages.quote = {
 
         const name = document.getElementById('wizard-name').value;
         const email = document.getElementById('wizard-email').value;
-        const phone = document.getElementById('wizard-phone').value;
+        const countryCode = document.getElementById('wizard-country-code').value;
+        const phoneNum = document.getElementById('wizard-phone').value;
+        const phone = countryCode + ' ' + phoneNum;
         const figma = document.getElementById('wizard-figma').value;
         const notes = document.getElementById('wizard-notes').value;
 
@@ -355,19 +360,10 @@ window.AetherPages.quote = {
 
         const finalTotal = totalElem.textContent;
 
-        const quoteObj = {
-          id: Date.now(),
-          name,
-          email,
-          phone,
-          figma,
-          notes,
-          type: typeLabel,
-          pages,
-          addons: selectedAddons,
-          estimate: `$${finalTotal}`,
-          date: new Date().toLocaleDateString(isAr ? 'ar-EG' : 'en-US')
-        };
+        let fullDescription = notes || '';
+        if (selectedAddons.length > 0) {
+          fullDescription += "\n\n المميزات المطلوبة (Selected Addons):\n- " + selectedAddons.join("\n- ");
+        }
 
         function getCookie(name) {
           let cookieValue = null;
@@ -389,11 +385,11 @@ window.AetherPages.quote = {
           email: email,
           phone: phone,
           company: figma || '',
-          country: '',
+          country: countryCode,
           service_type: typeLabel,
           budget: `$${finalTotal}`,
           deadline: '',
-          description: notes || '',
+          description: fullDescription,
           pages: pages,
           estimate: `$${finalTotal}`
         };

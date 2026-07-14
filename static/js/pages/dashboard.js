@@ -430,6 +430,15 @@ window.AetherPages.dashboard = {
                     <span class="db-list-meta">${isAr ? 'الصفحات المطلوبة:' : 'Pages Target:'} ${q.pages}</span>
                   </div>
                   <div style="display: flex; gap: 15px; align-items: center;">
+                    ${q.status === 'new' ? `
+                      <button class="btn btn-secondary db-ack-quote-btn" data-id="${q.id}" style="padding: 4px 10px; font-size: 0.8rem; color: var(--color-accent-1); border-color: var(--color-accent-1); font-weight:600;">
+                        ${isAr ? 'تأكيد الاستلام' : 'Acknowledge'}
+                      </button>
+                    ` : `
+                      <span style="font-size: 0.8rem; font-weight: 700; color: #00ff88; background: rgba(0, 255, 136, 0.1); padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(0, 255, 136, 0.2);">
+                        ${isAr ? '✓ تم الاستلام' : '✓ Acknowledged'}
+                      </span>
+                    `}
                     <button class="btn btn-primary db-preview-quote-btn" data-id="${q.id}" style="padding: 4px 12px; font-size: 0.8rem; font-weight:600;">
                       ${isAr ? 'معاينة' : 'Preview'}
                     </button>
@@ -486,9 +495,7 @@ window.AetherPages.dashboard = {
                 <div class="form-group">
                   <input type="email" id="team-email" class="form-control" placeholder="${isAr ? 'البريد الإلكتروني للعمل' : 'Work Email'}" required>
                 </div>
-                <div class="form-group">
-                  <input type="text" id="team-initials" class="form-control" placeholder="${isAr ? 'الأحرف الأولى (مثال: AB)' : 'Initials (e.g. LA)'}" required maxlength="2">
-                </div>
+
                 <!-- Languages Field -->
                 <div class="form-group" style="margin-bottom: 1.2rem;">
                   <label class="form-label" style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.85rem;">${isAr ? 'لغات البرمجة (اختر ما ينطبق):' : 'Programming Languages:'}</label>
@@ -743,6 +750,24 @@ window.AetherPages.dashboard = {
           });
         });
 
+        const ackButtons = document.querySelectorAll('.db-ack-quote-btn');
+        ackButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = parseInt(btn.getAttribute('data-id'), 10);
+            fetch(`/api/requests/${id}/`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken') || ''
+              },
+              body: JSON.stringify({ status: 'accepted' })
+            })
+            .then(() => {
+              loadAllDashboardData();
+            });
+          });
+        });
+
         const deleteQuotes = document.querySelectorAll('.delete-quote-btn');
         deleteQuotes.forEach(btn => {
           btn.addEventListener('click', () => {
@@ -771,8 +796,10 @@ window.AetherPages.dashboard = {
             const name = document.getElementById('team-name').value;
             const role = document.getElementById('team-role').value;
             const email = document.getElementById('team-email').value;
-            const initials = document.getElementById('team-initials').value;
             const bio = document.getElementById('team-bio').value;
+
+            // Generate initials automatically from name
+            const initials = name.trim().split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) || 'Æ';
 
             const langs = [];
             document.querySelectorAll('.team-lang-check:checked').forEach(cb => langs.push(cb.value));
