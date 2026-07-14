@@ -1,0 +1,29 @@
+# Python virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# Environment configurations
+.env
+
+# Database
+db.sqlite3
+
+# Python cache & compiles
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Django media files (User uploads)
+media/
+staticfiles/
+
+# Node dependencies (Vite legacy leftover)
+node_modules/
+
+# OS specific files
+.DS_Store
+Thumbs.db

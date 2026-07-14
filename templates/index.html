@@ -1,0 +1,182 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO Meta Tags -->
+  <title>AetherCore Technologies | Bespoke Frontend Engineering & Luxury UI/UX</title>
+  <meta name="description" content="AetherCore Technologies architects premium, high-performance web frontends, custom interactive SPAs, and immersive visual UI/UX design structures. Premium client-side development.">
+  <meta name="keywords" content="Frontend Agency, React, Vue, HTML5, CSS3, JavaScript, UI/UX Design, Tailwind CSS, Web Development, Figma-to-Code, AetherCore">
+  <meta name="author" content="AetherCore Technologies">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="{% static 'css/variables.css' %}">
+  <link rel="stylesheet" href="{% static 'css/global.css' %}">
+  <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+  <!-- FontAwesome 6 Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Loading Screen Loader -->
+  <div id="loading-screen">
+    <img src="{% static 'assets/logo.png' %}" alt="AetherCore Logo" style="height: 95px; margin-bottom: 2.5rem; filter: drop-shadow(0 0 15px var(--glow-color));">
+    <div class="loader-bar">
+      <div class="loader-progress"></div>
+    </div>
+  </div>
+
+  <!-- Scroll Progress Indicator -->
+  <div id="scroll-progress"></div>
+
+  <!-- background Particle Canvas & Glow Lights -->
+  <canvas id="bg-canvas"></canvas>
+  <div class="ambient-glow"></div>
+  <div class="ambient-glow-2"></div>
+
+  <!-- Sticky Navbar Header -->
+  <header class="header-nav">
+    <div class="logo" id="nav-brand-logo" style="padding: 2px 0; display: flex; align-items: center;">
+      <img src="{% static 'assets/logo.png' %}" alt="AetherCore Logo" style="height: 62px; max-height: 65px; object-fit: contain;">
+    </div>
+    
+    <!-- Desktop links menu -->
+    <nav>
+      <ul class="nav-menu" id="header-nav-menu">
+        <li class="nav-link active" data-route="home">Home</li>
+        <li class="nav-link" data-route="about">About</li>
+        <li class="nav-link" data-route="services">Services</li>
+        <li class="nav-link" data-route="technologies">Tech Stack</li>
+        <li class="nav-link" data-route="portfolio">Portfolio</li>
+        <li class="nav-link" data-route="pricing">Pricing</li>
+        <li class="nav-link" data-route="contact">Contact</li>
+        <!-- Mobile only link for Quote Request -->
+        <li class="nav-link mobile-only-link" data-route="quote" style="display: none;">Request Quote</li>
+      </ul>
+    </nav>
+    
+    <!-- Global theme, lang & quote CTA -->
+    <div class="nav-actions">
+      <button class="nav-btn theme-toggle-btn" id="nav-theme-btn" title="Toggle Mode">
+        <!-- SVG injected in theme.js -->
+      </button>
+      <button class="nav-btn lang-toggle-btn" id="nav-lang-btn" style="width: auto; padding: 0 12px; font-size: 0.85rem; font-weight: 600;">
+        العربية
+      </button>
+      <button class="nav-cta" id="nav-quote-cta">Request Quote</button>
+    </div>
+
+    <!-- Mobile menu trigger -->
+    <button class="hamburger" id="nav-hamburger-trigger" aria-label="Toggle Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <!-- Viewport Main Content Container -->
+  <main id="app-viewport"></main>
+
+  <!-- Mega Footer -->
+  <footer class="main-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo" style="padding: 2px 0; margin-bottom: 10px; display: flex; align-items: center;">
+            <img src="{% static 'assets/logo.png' %}" alt="AetherCore Logo" style="height: 72px; object-fit: contain;">
+          </div>
+          <p class="footer-desc" id="footer-desc-text">
+            Creating next-generation frontend ecosystems. We combine deep client-side engineering with luxury UI/UX aesthetics to build platforms that elevate your global influence.
+          </p>
+          <div class="footer-socials">
+            <a href="https://github.com/amgdbadr05-boop" target="_blank" class="footer-social-btn" aria-label="Github"><i class="fab fa-github"></i></a>
+            <a href="https://instagram.com/aether.core.tech" target="_blank" class="footer-social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://wa.me/6281214750878" target="_blank" class="footer-social-btn" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="mailto:aether.core.techno@gmail.com" class="footer-social-btn" aria-label="Email"><i class="fas fa-envelope"></i></a>
+            <a href="https://www.linkedin.com/in/amgd-badr" target="_blank" class="footer-social-btn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.facebook.com/Aethercoretechnologies" target="_blank" class="footer-social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="footer-title" id="footer-solutions-title">Solutions</h3>
+          <ul class="footer-links" id="footer-solutions-links">
+            <li class="nav-link" data-route="services">Interactive Prototyping</li>
+            <li class="nav-link" data-route="services">Single Page Apps (SPAs)</li>
+            <li class="nav-link" data-route="services">Responsive Layout Grids</li>
+            <li class="nav-link" data-route="services">Animations & GSAP</li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="footer-title" id="footer-company-title">Company</h3>
+          <ul class="footer-links" id="footer-company-links">
+            <li class="nav-link" data-route="about">About Us</li>
+            <li class="nav-link" data-route="technologies">Technical Stack</li>
+            <li class="nav-link" data-route="portfolio">Our Creations</li>
+            <li class="nav-link" data-route="careers">Work With Us</li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="footer-title" id="footer-support-title">Connect</h3>
+          <ul class="footer-links" id="footer-support-links">
+            <li class="nav-link" data-route="contact">Submit Ticket</li>
+            <li class="nav-link" data-route="faq">F.A.Qs Support</li>
+            <li class="nav-link" data-route="testimonials">Client Testimonials</li>
+            <li class="nav-link" data-route="blog">Technical Journal</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p id="footer-copy-text">© 2026 AetherCore Technologies. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#/privacy" class="footer-link" id="footer-privacy-link">Privacy Policy</a>
+          <a href="#/terms" class="footer-link" id="footer-terms-link">Terms & Conditions</a>
+          <a href="#/dashboard" class="footer-link" style="color: var(--color-accent-1); font-weight: bold;" id="footer-db-link">Admin Portal</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Back to Top Control -->
+  <button id="back-to-top" title="Scroll to Top">
+    ▲
+  </button>
+
+  <!-- Load Global configurations & logic (Non-Module Classic JavaScript) -->
+  <script src="{% static 'js/config.js' %}"></script>
+  <script src="{% static 'js/i18n.js' %}"></script>
+  <script src="{% static 'js/theme.js' %}"></script>
+  <script src="{% static 'js/lang.js' %}"></script>
+  <script src="{% static 'js/particles.js' %}"></script>
+
+  <!-- Load individual page views -->
+  <script src="{% static 'js/pages/home.js' %}"></script>
+  <script src="{% static 'js/pages/about.js' %}"></script>
+  <script src="{% static 'js/pages/services.js' %}"></script>
+  <script src="{% static 'js/pages/technologies.js' %}"></script>
+  <script src="{% static 'js/pages/portfolio.js' %}"></script>
+  <script src="{% static 'js/pages/projects.js' %}"></script>
+  <script src="{% static 'js/pages/pricing.js' %}"></script>
+  <script src="{% static 'js/pages/team.js' %}"></script>
+  <script src="{% static 'js/pages/testimonials.js' %}"></script>
+  <script src="{% static 'js/pages/faq.js' %}"></script>
+  <script src="{% static 'js/pages/blog.js' %}"></script>
+  <script src="{% static 'js/pages/contact.js' %}"></script>
+  <script src="{% static 'js/pages/quote.js' %}"></script>
+  <script src="{% static 'js/pages/privacy.js' %}"></script>
+  <script src="{% static 'js/pages/terms.js' %}"></script>
+  <script src="{% static 'js/pages/notfound.js' %}"></script>
+  <script src="{% static 'js/pages/dashboard.js' %}"></script>
+
+  <!-- Router and Bootstrap -->
+  <script src="{% static 'js/router.js' %}"></script>
+  <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

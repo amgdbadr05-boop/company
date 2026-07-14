@@ -1,0 +1,133 @@
+/* CSS Variables - AetherCore Technologies Design System */
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  /* Fonts */
+  --font-en: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-ar: 'Cairo', 'Tajawal', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-primary: var(--font-en);
+  
+  /* Shared Design Tokens */
+  --radius-xs: 6px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+  
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --transition-slow: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  --shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 16px -6px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 20px 40px -15px rgba(0, 0, 0, 0.15), 0 15px 25px -10px rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 0 30px rgba(110, 68, 255, 0.3);
+  
+  --glass-blur: 16px;
+}
+
+/* Dark Mode (Default Theme) */
+[data-theme="dark"] {
+  --bg-primary: #030014;
+  --bg-secondary: #080325;
+  --bg-tertiary: #0c063c;
+  --bg-glass: rgba(8, 3, 37, 0.6);
+  --bg-glass-hover: rgba(12, 6, 60, 0.8);
+  --bg-card: rgba(15, 10, 50, 0.4);
+  
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-inverse: #0f172a;
+  
+  --color-accent-1: #00f2fe; /* Cyber Cyan */
+  --color-accent-2: #8a2be2; /* Electric Purple */
+  --color-accent-3: #ff007f; /* Neon Pink */
+  
+  --gradient-primary: linear-gradient(135deg, var(--color-accent-1) 0%, var(--color-accent-2) 50%, var(--color-accent-3) 100%);
+  --gradient-dark: linear-gradient(180deg, #030014 0%, #080325 100%);
+  --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+  
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-color-hover: rgba(255, 255, 255, 0.18);
+  --border-accent: rgba(0, 242, 254, 0.3);
+  
+  --shadow-color: rgba(0, 0, 0, 0.7);
+  --glow-color: rgba(0, 242, 254, 0.15);
+  --glow-color-2: rgba(138, 43, 226, 0.08);
+  --selection-bg: rgba(138, 43, 226, 0.35);
+  --selection-color: #ffffff;
+}
+
+/* Light Mode */
+[data-theme="light"] {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-tertiary: #e2e8f0;
+  --bg-glass: rgba(248, 250, 252, 0.75);
+  --bg-glass-hover: rgba(241, 245, 249, 0.85);
+  --bg-card: rgba(255, 255, 255, 0.8);
+  
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --text-inverse: #f8fafc;
+  
+  --color-accent-1: #3b82f6; /* Modern Blue */
+  --color-accent-2: #8b5cf6; /* Royal Indigo */
+  --color-accent-3: #ec4899; /* Deep Rose */
+  
+  --gradient-primary: linear-gradient(135deg, var(--color-accent-1) 0%, var(--color-accent-2) 50%, var(--color-accent-3) 100%);
+  --gradient-dark: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  --gradient-glass: linear-gradient(135deg, rgba(15, 23, 42, 0.03) 0%, rgba(15, 23, 42, 0.01) 100%);
+  
+  --border-color: rgba(15, 23, 42, 0.08);
+  --border-color-hover: rgba(15, 23, 42, 0.15);
+  --border-accent: rgba(59, 130, 246, 0.3);
+  
+  --shadow-color: rgba(15, 23, 42, 0.06);
+  --glow-color: rgba(59, 130, 246, 0.1);
+  --glow-color-2: rgba(139, 92, 246, 0.06);
+  --selection-bg: rgba(236, 72, 153, 0.2);
+  --selection-color: #0f172a;
+}
+
+/* Luxury Gold Mode */
+[data-theme="gold"] {
+  --bg-primary: #090603;
+  --bg-secondary: #130e06;
+  --bg-tertiary: #1e150a;
+  --bg-glass: rgba(19, 14, 6, 0.7);
+  --bg-glass-hover: rgba(30, 21, 10, 0.85);
+  --bg-card: rgba(25, 18, 9, 0.5);
+  
+  --text-primary: #fdfaf2;
+  --text-secondary: #dcd1be;
+  --text-muted: #8e826b;
+  --text-inverse: #090603;
+  
+  --color-accent-1: #d4af37; /* Metallic Gold */
+  --color-accent-2: #f3e5ab; /* Champagne Silk */
+  --color-accent-3: #aa7c11; /* Warm Bronze */
+  
+  --gradient-primary: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #aa7c11 100%);
+  --gradient-dark: linear-gradient(180deg, #090603 0%, #130e06 100%);
+  --gradient-glass: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(212, 175, 55, 0.01) 100%);
+  
+  --border-color: rgba(212, 175, 55, 0.16);
+  --border-color-hover: rgba(212, 175, 55, 0.36);
+  --border-accent: rgba(212, 175, 55, 0.4);
+  
+  --shadow-color: rgba(0, 0, 0, 0.9);
+  --glow-color: rgba(212, 175, 55, 0.15);
+  --glow-color-2: rgba(170, 124, 17, 0.1);
+  --selection-bg: rgba(212, 175, 55, 0.3);
+  --selection-color: #fdfaf2;
+}
+
+/* RTL Adjustments for Arabic Language */
+[dir="rtl"] {
+  --font-primary: var(--font-ar);
+}
