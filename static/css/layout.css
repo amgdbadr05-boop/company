@@ -494,6 +494,10 @@
     margin-left: 15px !important;
   }
   
+  #nav-client-logout-btn {
+    display: none !important;
+  }
+
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 2.5rem;

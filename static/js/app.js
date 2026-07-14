@@ -215,7 +215,46 @@ window.updateHeaderAuthUI = function() {
     return cookieValue;
   }
 
+  const mLogin = document.getElementById('mobile-client-login-btn');
+  const mNotif = document.getElementById('mobile-client-notif-link');
+  const mLogout = document.getElementById('mobile-client-logout-btn');
+
   if (window.AetherClientLoggedIn === true) {
+    if (mLogin) mLogin.style.display = 'none';
+    if (mNotif) {
+      mNotif.style.display = 'block';
+      mNotif.textContent = isAr ? 'تنبيهاتي والرسائل' : 'My Requests';
+      const newNotif = mNotif.cloneNode(true);
+      mNotif.parentNode.replaceChild(newNotif, mNotif);
+      newNotif.addEventListener('click', () => {
+        window.AetherRouter.navigateTo('notifications');
+        closeMobileMenu();
+      });
+    }
+    if (mLogout) {
+      mLogout.style.display = 'block';
+      mLogout.textContent = isAr ? 'خروج' : 'Logout';
+      const newLogout = mLogout.cloneNode(true);
+      mLogout.parentNode.replaceChild(newLogout, mLogout);
+      newLogout.addEventListener('click', () => {
+        fetch('/api/accounts/logout/', {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': getCookie('csrftoken') || ''
+          }
+        })
+        .finally(() => {
+          window.AetherClientLoggedIn = false;
+          window.AetherClientEmail = null;
+          window.AetherClientName = null;
+          if (window.globalPollingInterval) clearInterval(window.globalPollingInterval);
+          window.updateHeaderAuthUI();
+          window.AetherRouter.navigateTo('home');
+          closeMobileMenu();
+        });
+      });
+    }
+
     wrapper.innerHTML = `
       <!-- Dynamic Notifications Bell -->
       <div style="position: relative;" id="client-notification-container">
@@ -277,6 +316,19 @@ window.updateHeaderAuthUI = function() {
     }
 
   } else {
+    if (mNotif) mNotif.style.display = 'none';
+    if (mLogout) mLogout.style.display = 'none';
+    if (mLogin) {
+      mLogin.style.display = 'block';
+      mLogin.textContent = isAr ? 'تسجيل دخول' : 'Login';
+      const newLogin = mLogin.cloneNode(true);
+      mLogin.parentNode.replaceChild(newLogin, mLogin);
+      newLogin.addEventListener('click', () => {
+        window.AetherRouter.navigateTo('login');
+        closeMobileMenu();
+      });
+    }
+
     wrapper.innerHTML = `
       <button class="nav-cta" id="nav-quote-cta">${isAr ? 'طلب عرض سعر' : 'Request Quote'}</button>
       <button id="nav-client-login-btn" style="padding: 6px 14px; font-size: 0.8rem; font-weight: 700; color: var(--color-accent-1); border: 1px solid var(--color-accent-1); background: transparent; border-radius: var(--radius-xs); cursor: pointer; display: flex; align-items: center; justify-content: center; height: 35px; white-space: nowrap;">

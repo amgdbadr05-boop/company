@@ -187,6 +187,7 @@ window.AetherPages.dashboard = {
     let dbQuotes = [];
     let dbTeam = [];
     let dbClients = [];
+    let dbPollingInterval = null;
 
     function getPipelineVal() {
       return localStorage.getItem('aether-stat-pipeline') || '0';
@@ -220,6 +221,7 @@ window.AetherPages.dashboard = {
         dbClients = clients;
         
         renderSection('stats');
+        startDashboardPolling();
       })
       .catch(err => {
         console.error('Error fetching dashboard data:', err);
@@ -236,6 +238,52 @@ window.AetherPages.dashboard = {
           }
         }
       });
+    }
+
+    function startDashboardPolling() {
+      if (dbPollingInterval) clearInterval(dbPollingInterval);
+
+      dbPollingInterval = setInterval(() => {
+        if (!window.AetherAdminLoggedIn || !document.getElementById('db-content-viewport')) {
+          clearInterval(dbPollingInterval);
+          return;
+        }
+
+        Promise.all([
+          fetch('/api/projects/').then(r => r.json()),
+          fetch('/api/contact/').then(r => r.json()),
+          fetch('/api/requests/').then(r => r.json()),
+          fetch('/api/team/').then(r => r.json()),
+          fetch('/api/accounts/clients/').then(r => r.json())
+        ])
+        .then(([projects, messages, quotes, team, clients]) => {
+          const hasProjectsChanged = JSON.stringify(projects) !== JSON.stringify(dbProjects);
+          const hasMessagesChanged = JSON.stringify(messages) !== JSON.stringify(dbMessages);
+          const hasQuotesChanged = JSON.stringify(quotes) !== JSON.stringify(dbQuotes);
+          const hasTeamChanged = JSON.stringify(team) !== JSON.stringify(dbTeam);
+          const hasClientsChanged = JSON.stringify(clients) !== JSON.stringify(dbClients);
+
+          if (hasProjectsChanged || hasMessagesChanged || hasQuotesChanged || hasTeamChanged || hasClientsChanged) {
+            dbProjects = projects;
+            dbMessages = messages;
+            dbQuotes = quotes;
+            dbTeam = team;
+            dbClients = clients;
+
+            const activeSection = document.querySelector('.db-menu-item.active');
+            if (activeSection) {
+              const sectionId = activeSection.getAttribute('data-section');
+              const listSections = ['stats', 'portfolio', 'messages', 'quotes', 'clients'];
+              if (listSections.includes(sectionId)) {
+                const scrollPos = window.scrollY;
+                renderSection(sectionId);
+                window.scrollTo({ top: scrollPos, behavior: 'instant' });
+              }
+            }
+          }
+        })
+        .catch(err => console.error("Silent dashboard polling failed:", err));
+      }, 5000);
     }
 
     // Operational Sections
