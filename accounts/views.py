@@ -33,7 +33,7 @@ class LoginView(APIView):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         logout(request)

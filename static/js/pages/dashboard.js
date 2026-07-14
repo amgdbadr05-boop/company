@@ -174,7 +174,6 @@ window.AetherPages.dashboard = {
           }
         })
         .finally(() => {
-          window.AetherAdminLoggedIn = False;
           window.AetherAdminLoggedIn = false;
           window.AetherRouter.renderCurrentRoute();
         });
@@ -205,10 +204,10 @@ window.AetherPages.dashboard = {
       }
 
       Promise.all([
-        fetch('/api/projects/').then(r => r.json()),
-        fetch('/api/contact/').then(r => r.json()),
-        fetch('/api/requests/').then(r => r.json()),
-        fetch('/api/team/').then(r => r.json())
+        fetch('/api/projects/').then(r => { if (!r.ok) throw new Error('Auth expired'); return r.json(); }),
+        fetch('/api/contact/').then(r => { if (!r.ok) throw new Error('Auth expired'); return r.json(); }),
+        fetch('/api/requests/').then(r => { if (!r.ok) throw new Error('Auth expired'); return r.json(); }),
+        fetch('/api/team/').then(r => { if (!r.ok) throw new Error('Auth expired'); return r.json(); })
       ])
       .then(([projects, messages, quotes, team]) => {
         dbProjects = projects;
@@ -220,12 +219,17 @@ window.AetherPages.dashboard = {
       })
       .catch(err => {
         console.error('Error fetching dashboard data:', err);
-        if (viewport) {
-          viewport.innerHTML = `
-            <div style="text-align: center; color: var(--color-accent-3); font-weight: bold; font-size: 1.2rem; padding: 4rem 0;">
-              ${isAr ? '❌ فشل الاتصال بقاعدة البيانات: يرجى التحقق من تشغيل الخادم والاتصال بالـ API!' : '❌ Server synchronization offline. Please verify backend status.'}
-            </div>
-          `;
+        if (err.message === 'Auth expired') {
+          window.AetherAdminLoggedIn = false;
+          window.AetherRouter.renderCurrentRoute();
+        } else {
+          if (viewport) {
+            viewport.innerHTML = `
+              <div style="text-align: center; color: var(--color-accent-3); font-weight: bold; font-size: 1.2rem; padding: 4rem 0;">
+                ${isAr ? '❌ فشل الاتصال بقاعدة البيانات: يرجى التحقق من تشغيل الخادم والاتصال بالـ API!' : '❌ Server synchronization offline. Please verify backend status.'}
+              </div>
+            `;
+          }
         }
       });
     }
