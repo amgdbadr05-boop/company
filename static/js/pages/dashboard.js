@@ -72,6 +72,7 @@ window.AetherPages.dashboard = {
       { id: 'messages', label: isAr ? 'الرسائل واستفسارات' : 'Visitor Inbox', icon: '<i class="fas fa-envelope"></i>' },
       { id: 'quotes', label: isAr ? 'طلبات العروض' : 'Quote Requests', icon: '<i class="fas fa-file-invoice-dollar"></i>' },
       { id: 'users', label: isAr ? 'أعضاء الفريق' : 'Team Registry', icon: '<i class="fas fa-users"></i>' },
+      { id: 'clients', label: isAr ? 'العملاء المسجلين' : 'Clients Registry', icon: '<i class="fas fa-user-tag"></i>' },
       { id: 'settings', label: isAr ? 'إعدادات النظام' : 'System Settings', icon: '<i class="fas fa-sliders"></i>' }
     ];
 
@@ -185,6 +186,7 @@ window.AetherPages.dashboard = {
     let dbMessages = [];
     let dbQuotes = [];
     let dbTeam = [];
+    let dbClients = [];
 
     function getPipelineVal() {
       return localStorage.getItem('aether-stat-pipeline') || '0';
@@ -207,13 +209,15 @@ window.AetherPages.dashboard = {
         fetch('/api/projects/').then(r => { if (!r.ok) throw new Error('Auth expired'); return r.json(); }),
         fetch('/api/contact/').then(r => { if (!r.ok) throw new Error('Auth expired'); return r.json(); }),
         fetch('/api/requests/').then(r => { if (!r.ok) throw new Error('Auth expired'); return r.json(); }),
-        fetch('/api/team/').then(r => { if (!r.ok) throw new Error('Auth expired'); return r.json(); })
+        fetch('/api/team/').then(r => { if (!r.ok) throw new Error('Auth expired'); return r.json(); }),
+        fetch('/api/accounts/clients/').then(r => { if (!r.ok) throw new Error('Auth expired'); return r.json(); })
       ])
-      .then(([projects, messages, quotes, team]) => {
+      .then(([projects, messages, quotes, team, clients]) => {
         dbProjects = projects;
         dbMessages = messages;
         dbQuotes = quotes;
         dbTeam = team;
+        dbClients = clients;
         
         renderSection('stats');
       })
@@ -565,6 +569,31 @@ window.AetherPages.dashboard = {
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">${isAr ? 'إدراج العضو للفريق' : 'Save Member'}</button>
               </form>
+            </div>
+          </div>
+        `;
+      },
+      clients: () => {
+        return `
+          <div class="db-header">
+            <h2 style="font-size: 1.8rem; font-weight: 800;">${isAr ? 'قائمة العملاء المسجلين بالمنصة' : 'Registered Clients Database'}</h2>
+          </div>
+          <div class="db-panel">
+            <h3 style="margin-bottom: 1.5rem;">${isAr ? 'العملاء النشطين' : 'Active Client Nodes'}</h3>
+            <div class="db-list">
+              ${dbClients.map(c => `
+                <div class="db-list-item">
+                  <div class="db-list-details">
+                    <span class="db-list-title" style="font-weight:700;">${c.first_name} ${c.last_name}</span>
+                    <span class="db-list-meta" style="color: var(--color-accent-1); font-family: var(--font-en); font-weight: 600;">@${c.username}</span>
+                    <span class="db-list-meta" style="color: var(--text-secondary);">${c.email}</span>
+                  </div>
+                  <div style="font-size:0.8rem; color:var(--text-muted);">
+                    ${isAr ? 'تاريخ التسجيل:' : 'Joined:'} ${new Date(c.date_joined).toLocaleDateString()}
+                  </div>
+                </div>
+              `).join('')}
+              ${dbClients.length === 0 ? `<p style="text-align: center; color: var(--text-muted); padding: 2rem 0;">${isAr ? 'لا يوجد عملاء مسجلين حالياً.' : 'No registered clients found.'}</p>` : ''}
             </div>
           </div>
         `;

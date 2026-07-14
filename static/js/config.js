@@ -23,6 +23,8 @@ window.AetherConfig = {
     QUOTE: 'quote',
     PRIVACY: 'privacy',
     TERMS: 'terms',
-    DASHBOARD: 'dashboard'
+    DASHBOARD: 'dashboard',
+    LOGIN: 'login',
+    REGISTRATION: 'registration'
   }
 };

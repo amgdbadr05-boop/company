@@ -13,6 +13,40 @@ window.AetherRouter = {
     // Clean query strings or arguments
     routeName = routeName.split('?')[0];
 
+    // Force login before accessing portfolio, contact, or quote forms
+    const protectedRoutes = [config.ROUTES.PORTFOLIO, config.ROUTES.CONTACT, config.ROUTES.QUOTE];
+    if (protectedRoutes.includes(routeName)) {
+      if (window.AetherClientLoggedIn === undefined) {
+        window.AetherClientLoggedIn = 'checking';
+        fetch('/api/accounts/status/')
+          .then(res => res.json())
+          .then(data => {
+            window.AetherClientLoggedIn = data.isAuthenticated;
+            if (data.isAuthenticated) {
+              window.AetherClientEmail = data.email;
+              window.AetherClientName = data.username;
+              if (typeof window.updateHeaderAuthUI === 'function') {
+                window.updateHeaderAuthUI();
+              }
+              window.AetherRouter.renderCurrentRoute();
+            } else {
+              window.AetherIntendedRoute = routeName;
+              window.AetherRouter.navigateTo('login');
+            }
+          })
+          .catch(() => {
+            window.AetherClientLoggedIn = false;
+            window.AetherIntendedRoute = routeName;
+            window.AetherRouter.navigateTo('login');
+          });
+        return;
+      } else if (window.AetherClientLoggedIn === false || window.AetherClientLoggedIn === 'checking') {
+        window.AetherIntendedRoute = routeName;
+        window.AetherRouter.navigateTo('login');
+        return;
+      }
+    }
+
     const appViewport = document.getElementById('app-viewport');
     if (!appViewport) return;
 
