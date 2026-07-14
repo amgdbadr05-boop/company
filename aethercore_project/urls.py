@@ -11,7 +11,7 @@ from requests.views import ServiceRequestViewSet
 from team.views import TeamMemberViewSet
 from blog.views import BlogPostViewSet
 from careers.views import JobOpeningViewSet, JobApplicationViewSet
-from accounts.views import LoginView, LogoutView, StatusView, RegisterView, ClientsListView
+from accounts.views import LoginView, LogoutView, StatusView, RegisterView, ClientsListView, ClientDetailView
 
 # Setup DRF Router
 router = routers.DefaultRouter()
@@ -35,6 +35,7 @@ urlpatterns = [
     path('api/accounts/status/', StatusView.as_view(), name='api-status'),
     path('api/accounts/register/', RegisterView.as_view(), name='api-register'),
     path('api/accounts/clients/', ClientsListView.as_view(), name='api-clients'),
+    path('api/accounts/clients/<int:pk>/', ClientDetailView.as_view(), name='api-client-delete'),
 
     # Registered REST APIs
     path('api/', include(router.urls)),

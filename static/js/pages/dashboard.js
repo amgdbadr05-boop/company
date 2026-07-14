@@ -588,8 +588,13 @@ window.AetherPages.dashboard = {
                     <span class="db-list-meta" style="color: var(--color-accent-1); font-family: var(--font-en); font-weight: 600;">@${c.username}</span>
                     <span class="db-list-meta" style="color: var(--text-secondary);">${c.email}</span>
                   </div>
-                  <div style="font-size:0.8rem; color:var(--text-muted);">
-                    ${isAr ? 'تاريخ التسجيل:' : 'Joined:'} ${new Date(c.date_joined).toLocaleDateString()}
+                  <div style="display: flex; gap: 15px; align-items: center;">
+                    <div style="font-size:0.8rem; color:var(--text-muted); text-align: right;">
+                      ${isAr ? 'تاريخ التسجيل:' : 'Joined:'} ${new Date(c.date_joined).toLocaleDateString()}
+                    </div>
+                    <button class="btn btn-secondary delete-client-btn" data-id="${c.id}" style="padding: 4px 10px; font-size: 0.8rem; color: var(--color-accent-3); border-color: var(--color-accent-3);">
+                      ${isAr ? 'حذف' : 'Purge'}
+                    </button>
                   </div>
                 </div>
               `).join('')}
@@ -886,6 +891,27 @@ window.AetherPages.dashboard = {
             const id = btn.getAttribute('data-id');
             if (confirm(isAr ? 'هل أنت متأكد من إنهاء عضوية هذا العضو؟' : 'Dismiss this member?')) {
               fetch(`/api/team/${id}/`, {
+                method: 'DELETE',
+                headers: {
+                  'X-CSRFToken': getCookie('csrftoken') || ''
+                }
+              })
+              .then(() => {
+                loadAllDashboardData();
+              });
+            }
+          });
+        });
+      }
+
+      // 5. Clients Registry Actions
+      if (sectionId === 'clients') {
+        const deleteClients = document.querySelectorAll('.delete-client-btn');
+        deleteClients.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            if (confirm(isAr ? 'هل أنت متأكد من حذف هذا العميل تماماً من النظام؟' : 'Purge this client account completely?')) {
+              fetch(`/api/accounts/clients/${id}/`, {
                 method: 'DELETE',
                 headers: {
                   'X-CSRFToken': getCookie('csrftoken') || ''

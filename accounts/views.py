@@ -93,6 +93,7 @@ class ClientsListView(APIView):
     def get(self, request):
         clients = User.objects.filter(is_staff=False).order_by('-date_joined')
         data = [{
+            'id': c.id,
             'first_name': c.first_name,
             'last_name': c.last_name,
             'email': c.email,
@@ -100,3 +101,14 @@ class ClientsListView(APIView):
             'date_joined': c.date_joined.isoformat()
         } for c in clients]
         return Response(data)
+
+class ClientDetailView(APIView):
+    permission_classes = [permissions.IsAdminUser]
+
+    def delete(self, request, pk):
+        try:
+            client = User.objects.get(pk=pk, is_staff=False)
+            client.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except User.DoesNotExist:
+            return Response({'detail': 'Client not found.'}, status=status.HTTP_404_NOT_FOUND)
