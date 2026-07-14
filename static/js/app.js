@@ -219,18 +219,10 @@ window.updateHeaderAuthUI = function() {
     wrapper.innerHTML = `
       <!-- Dynamic Notifications Bell -->
       <div style="position: relative;" id="client-notification-container">
-        <button class="nav-btn" id="nav-bell-btn" style="font-size: 1.15rem; color: var(--text-primary); position: relative; width: auto; height: auto; padding: 0 8px; background: transparent; border: none; cursor: pointer;">
+        <button id="nav-bell-btn" style="font-size: 1.15rem; color: var(--text-primary); position: relative; width: auto; height: auto; padding: 0 8px; background: transparent; border: none; cursor: pointer;">
           🔔
           <span id="nav-bell-dot" style="display: none; position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: #00ff88; border-radius: 50%; box-shadow: 0 0 8px #00ff88;"></span>
         </button>
-        <div id="nav-notification-dropdown" style="display: none; position: absolute; top: 45px; right: ${isAr ? 'auto' : '0'}; left: ${isAr ? '0' : 'auto'}; width: 290px; background: rgba(8, 3, 37, 0.95); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 15px; box-shadow: var(--shadow-glow); backdrop-filter: blur(15px); z-index: 10000; text-align: ${isAr ? 'right' : 'left'}; direction: ${isAr ? 'rtl' : 'ltr'};">
-          <h4 style="font-size: 0.9rem; margin-bottom: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; color: var(--text-primary);" class="notif-title">
-            ${isAr ? 'التنبيهات والرسائل' : 'Notifications'}
-          </h4>
-          <div id="notif-list-container" style="font-size: 0.8rem; color: var(--text-secondary); max-height: 200px; overflow-y: auto;">
-            ${isAr ? 'جاري الفحص...' : 'Checking notifications...'}
-          </div>
-        </div>
       </div>
 
       <!-- Request Quote Link -->
@@ -242,72 +234,20 @@ window.updateHeaderAuthUI = function() {
       </button>
     `;
 
-    // 1. Initial Notification status fetch to update bell dot
-    fetch('/api/requests/my_requests/')
-      .then(res => res.json())
-      .then(data => {
-        const acceptedRequests = data.filter(q => q.status !== 'new');
-        const bellDot = document.getElementById('nav-bell-dot');
-        if (bellDot) {
-          bellDot.style.display = acceptedRequests.length > 0 ? 'block' : 'none';
-        }
-      });
-
-    // 2. Bell click to open dropdown
+    // Bind Bell Click to navigate directly to dedicated My Requests Hub
     const bellBtn = document.getElementById('nav-bell-btn');
-    const dropdown = document.getElementById('nav-notification-dropdown');
-    if (bellBtn && dropdown) {
-      bellBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const show = dropdown.style.display === 'none';
-        dropdown.style.display = show ? 'block' : 'none';
-        
-        if (show) {
-          const container = document.getElementById('notif-list-container');
-          container.innerHTML = isAr ? 'جاري تحميل التنبيهات...' : 'Loading notifications...';
-          
-          fetch('/api/requests/my_requests/')
-            .then(res => res.json())
-            .then(data => {
-              if (data.length === 0) {
-                container.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding:10px 0;">${isAr ? 'لا توجد تنبيهات جديدة حالياً.' : 'No new notifications.'}</p>`;
-              } else {
-                container.innerHTML = data.map(q => {
-                  if (q.status === 'new') {
-                    return `
-                      <div style="border-bottom:1px dashed var(--border-color); padding:8px 0; line-height:1.5;">
-                        <span style="color:var(--color-accent-1); font-weight:bold;">[${q.service_type}]</span><br>
-                        <span style="color:#ffcc00; font-weight:bold;">${isAr ? '⏳ طلبك قيد المراجعة حالياً من قبل المسؤول.' : '⏳ Your request is currently under review.'}</span><br>
-                        <span style="font-size:0.75rem; color:var(--text-muted);">${isAr ? 'الميزانية التقديرية:' : 'Budget Estimate:'} ${q.estimate}</span>
-                      </div>
-                    `;
-                  } else {
-                    return `
-                      <div style="border-bottom:1px dashed var(--border-color); padding:8px 0; line-height:1.5;">
-                        <span style="color:var(--color-accent-1); font-weight:bold;">[${q.service_type}]</span><br>
-                        <span style="color:#00ff88; font-weight:bold;">${isAr ? '✓ تم تأكيد استلام طلبك بنجاح من قبل المسؤول.' : '✓ Your request has been successfully received and confirmed by the admin.'}</span><br>
-                        <span style="font-size:0.75rem; color:var(--text-muted);">${isAr ? 'الميزانية التقديرية:' : 'Budget Estimate:'} ${q.estimate}</span>
-                        <a href="https://wa.me/62081214750878" target="_blank" class="btn btn-primary" style="display:block; text-align:center; margin-top:8px; padding:5px; font-size:0.75rem; text-decoration:none; color:white; border-radius:3px; background: #25d366; border: none; font-weight: bold;">
-                          ${isAr ? '💬 تواصل عبر واتساب للاستفسار' : '💬 Chat on WhatsApp Inquiry'}
-                        </a>
-                      </div>
-                    `;
-                  }
-                }).join('');
-              }
-            })
-            .catch(() => {
-              container.innerHTML = isAr ? '❌ فشل تحميل التنبيهات' : '❌ Failed to load notifications';
-            });
-        }
-      });
-
-      document.addEventListener('click', () => {
-        dropdown.style.display = 'none';
+    if (bellBtn) {
+      bellBtn.addEventListener('click', () => {
+        window.AetherRouter.navigateTo('notifications');
       });
     }
 
-    // 3. Logout action
+    // Start background status tracking polling
+    if (typeof window.startGlobalStatusPolling === 'function') {
+      window.startGlobalStatusPolling();
+    }
+
+    // Logout action
     const logoutBtn = document.getElementById('nav-client-logout-btn');
     if (logoutBtn) {
       logoutBtn.addEventListener('click', () => {
@@ -321,13 +261,14 @@ window.updateHeaderAuthUI = function() {
           window.AetherClientLoggedIn = false;
           window.AetherClientEmail = null;
           window.AetherClientName = null;
+          if (window.globalPollingInterval) clearInterval(window.globalPollingInterval);
           window.updateHeaderAuthUI();
           window.AetherRouter.navigateTo('home');
         });
       });
     }
 
-    // 4. Quote CTA
+    // Quote CTA
     const quoteCta = document.getElementById('nav-quote-cta');
     if (quoteCta) {
       quoteCta.addEventListener('click', () => {
@@ -357,4 +298,59 @@ window.updateHeaderAuthUI = function() {
       });
     }
   }
+};
+
+// Global Notifications Background Polling with Native Browser Push Alerts
+window.globalPollingInterval = null;
+window.globalPreviousStatuses = {};
+
+window.startGlobalStatusPolling = function() {
+  if (window.globalPollingInterval) clearInterval(window.globalPollingInterval);
+  if (!window.AetherClientLoggedIn) return;
+
+  const fetchStatus = () => {
+    if (!window.AetherClientLoggedIn) {
+      if (window.globalPollingInterval) clearInterval(window.globalPollingInterval);
+      return;
+    }
+    fetch('/api/requests/my_requests/')
+      .then(res => res.json())
+      .then(data => {
+        const acceptedRequests = data.filter(q => q.status !== 'new');
+        const bellDot = document.getElementById('nav-bell-dot');
+        if (bellDot) {
+          bellDot.style.display = acceptedRequests.length > 0 ? 'block' : 'none';
+        }
+
+        const lang = window.AetherLang.getLang();
+        const isAr = lang === 'ar';
+
+        data.forEach(q => {
+          const isAccepted = q.status !== 'new';
+          // Check transition status (new -> accepted) to alert!
+          if (window.globalPreviousStatuses[q.id] === 'new' && isAccepted) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+              const title = isAr ? 'إيثيركور تكنولوجيز - تم استلام طلبك!' : 'AetherCore Technologies - Order Confirmed!';
+              const options = {
+                body: isAr 
+                  ? `✓ تم تأكيد استلام طلبك لـ (${q.service_type}) بنجاح! اضغط للتواصل معنا عبر واتساب.` 
+                  : `✓ Your request for (${q.service_type}) has been successfully confirmed by the admin! Tap to chat on WhatsApp.`,
+                tag: `quote-${q.id}`
+              };
+              const notif = new Notification(title, options);
+              notif.onclick = () => {
+                window.focus();
+                window.open('https://wa.me/62081214750878', '_blank');
+              };
+            }
+          }
+          window.globalPreviousStatuses[q.id] = q.status;
+        });
+      })
+      .catch(err => console.error("Dynamic sync polling offline:", err));
+  };
+
+  fetchStatus();
+  // Poll every 5 seconds for rapid instant updating!
+  window.globalPollingInterval = setInterval(fetchStatus, 5000);
 };

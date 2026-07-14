@@ -25,6 +25,7 @@ window.AetherConfig = {
     TERMS: 'terms',
     DASHBOARD: 'dashboard',
     LOGIN: 'login',
-    REGISTRATION: 'registration'
+    REGISTRATION: 'registration',
+    NOTIFICATIONS: 'notifications'
   }
 };

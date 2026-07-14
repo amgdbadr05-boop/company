@@ -14,7 +14,7 @@ window.AetherRouter = {
     routeName = routeName.split('?')[0];
 
     // Force login before accessing portfolio, contact, or quote forms
-    const protectedRoutes = [config.ROUTES.PORTFOLIO, config.ROUTES.CONTACT, config.ROUTES.QUOTE];
+    const protectedRoutes = [config.ROUTES.PORTFOLIO, config.ROUTES.CONTACT, config.ROUTES.QUOTE, config.ROUTES.NOTIFICATIONS];
     if (protectedRoutes.includes(routeName)) {
       if (window.AetherClientLoggedIn === undefined) {
         window.AetherClientLoggedIn = 'checking';
