@@ -136,7 +136,7 @@ function bindHeaderControls() {
   }
 
   // Navbar Links dynamic routing clicks
-  const navLinks = document.querySelectorAll('.nav-menu .nav-link');
+  const navLinks = document.querySelectorAll('.nav-link[data-route]');
   navLinks.forEach(link => {
     link.addEventListener('click', () => {
       const route = link.getAttribute('data-route');
@@ -166,7 +166,7 @@ window.updateSharedTranslations = function() {
   const lang = window.AetherLang.getLang();
 
   // Translate Navbar
-  const navLinks = document.querySelectorAll('.nav-menu .nav-link');
+  const navLinks = document.querySelectorAll('.nav-link[data-route]');
   navLinks.forEach(link => {
     const route = link.getAttribute('data-route');
     if (route) {
