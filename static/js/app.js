@@ -134,6 +134,16 @@ function bindHeaderControls() {
       }
     });
   }
+
+  // Navbar Links dynamic routing clicks
+  const navLinks = document.querySelectorAll('.nav-menu .nav-link');
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      const route = link.getAttribute('data-route');
+      window.AetherRouter.navigateTo(route);
+      closeMobileMenu();
+    });
+  });
 }
 
 function closeMobileMenu() {
@@ -233,7 +243,7 @@ window.updateHeaderAuthUI = function() {
     `;
 
     // 1. Initial Notification status fetch to update bell dot
-    fetch('/api/requests/my-requests/')
+    fetch('/api/requests/my_requests/')
       .then(res => res.json())
       .then(data => {
         const acceptedRequests = data.filter(q => q.status !== 'new');
@@ -256,23 +266,34 @@ window.updateHeaderAuthUI = function() {
           const container = document.getElementById('notif-list-container');
           container.innerHTML = isAr ? 'جاري تحميل التنبيهات...' : 'Loading notifications...';
           
-          fetch('/api/requests/my-requests/')
+          fetch('/api/requests/my_requests/')
             .then(res => res.json())
             .then(data => {
-              const acceptedRequests = data.filter(q => q.status !== 'new');
-              if (acceptedRequests.length === 0) {
+              if (data.length === 0) {
                 container.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding:10px 0;">${isAr ? 'لا توجد تنبيهات جديدة حالياً.' : 'No new notifications.'}</p>`;
               } else {
-                container.innerHTML = acceptedRequests.map(q => `
-                  <div style="border-bottom:1px dashed var(--border-color); padding:8px 0; line-height:1.5;">
-                    <span style="color:var(--color-accent-1); font-weight:bold;">[${q.service_type}]</span><br>
-                    <span style="color:#00ff88; font-weight:bold;">${isAr ? '✓ تم تأكيد استلام طلبك بنجاح من قبل المسؤول.' : '✓ Your request has been successfully received and confirmed by the admin.'}</span><br>
-                    <span style="font-size:0.75rem; color:var(--text-muted);">${isAr ? 'الميزانية التقديرية:' : 'Budget Estimate:'} ${q.estimate}</span>
-                    <a href="https://wa.me/62081214750878" target="_blank" class="btn btn-primary" style="display:block; text-align:center; margin-top:8px; padding:5px; font-size:0.75rem; text-decoration:none; color:white; border-radius:3px; background: #25d366; border: none; font-weight: bold;">
-                      ${isAr ? '💬 تواصل عبر واتساب للاستفسار' : '💬 Chat on WhatsApp Inquiry'}
-                    </a>
-                  </div>
-                `).join('');
+                container.innerHTML = data.map(q => {
+                  if (q.status === 'new') {
+                    return `
+                      <div style="border-bottom:1px dashed var(--border-color); padding:8px 0; line-height:1.5;">
+                        <span style="color:var(--color-accent-1); font-weight:bold;">[${q.service_type}]</span><br>
+                        <span style="color:#ffcc00; font-weight:bold;">${isAr ? '⏳ طلبك قيد المراجعة حالياً من قبل المسؤول.' : '⏳ Your request is currently under review.'}</span><br>
+                        <span style="font-size:0.75rem; color:var(--text-muted);">${isAr ? 'الميزانية التقديرية:' : 'Budget Estimate:'} ${q.estimate}</span>
+                      </div>
+                    `;
+                  } else {
+                    return `
+                      <div style="border-bottom:1px dashed var(--border-color); padding:8px 0; line-height:1.5;">
+                        <span style="color:var(--color-accent-1); font-weight:bold;">[${q.service_type}]</span><br>
+                        <span style="color:#00ff88; font-weight:bold;">${isAr ? '✓ تم تأكيد استلام طلبك بنجاح من قبل المسؤول.' : '✓ Your request has been successfully received and confirmed by the admin.'}</span><br>
+                        <span style="font-size:0.75rem; color:var(--text-muted);">${isAr ? 'الميزانية التقديرية:' : 'Budget Estimate:'} ${q.estimate}</span>
+                        <a href="https://wa.me/62081214750878" target="_blank" class="btn btn-primary" style="display:block; text-align:center; margin-top:8px; padding:5px; font-size:0.75rem; text-decoration:none; color:white; border-radius:3px; background: #25d366; border: none; font-weight: bold;">
+                          ${isAr ? '💬 تواصل عبر واتساب للاستفسار' : '💬 Chat on WhatsApp Inquiry'}
+                        </a>
+                      </div>
+                    `;
+                  }
+                }).join('');
               }
             })
             .catch(() => {
@@ -317,7 +338,7 @@ window.updateHeaderAuthUI = function() {
   } else {
     wrapper.innerHTML = `
       <button class="nav-cta" id="nav-quote-cta">${isAr ? 'طلب عرض سعر' : 'Request Quote'}</button>
-      <button class="nav-btn" id="nav-client-login-btn" style="padding: 6px 12px; font-size: 0.8rem; font-weight: 700; color: var(--color-accent-1); border-color: var(--color-accent-1); background: transparent;">
+      <button id="nav-client-login-btn" style="padding: 6px 14px; font-size: 0.8rem; font-weight: 700; color: var(--color-accent-1); border: 1px solid var(--color-accent-1); background: transparent; border-radius: var(--radius-xs); cursor: pointer; display: flex; align-items: center; justify-content: center; height: 35px; white-space: nowrap;">
         ${isAr ? 'تسجيل دخول' : 'Login'}
       </button>
     `;
