@@ -447,21 +447,23 @@ window.AetherPages.dashboard = {
           <div class="db-panel">
             <div class="db-list">
               ${dbMessages.map(m => `
-                <div class="db-list-item" style="opacity: ${m.read ? 0.7 : 1};">
+                <div class="db-list-item" style="opacity: ${m.read ? 0.7 : 1}; flex-direction: column; align-items: stretch; gap: 12px;">
                   <div class="db-list-details">
                     <span class="db-list-title" style="color: var(--color-accent-1); font-weight:bold;">[${m.subject}] ${m.name}</span>
                     <span class="db-list-meta">${m.email} ${m.phone ? `| ${m.phone}` : ''}</span>
-                    <span class="db-list-meta">${new Date(m.created_date).toLocaleString()}</span>
+                    <span class="db-list-meta" style="font-size: 0.8rem; color: var(--text-muted);">${new Date(m.created_date).toLocaleString()}</span>
                   </div>
-                  <div style="display: flex; gap: 15px; align-items: center;">
-                    <button class="btn btn-primary db-preview-msg-btn" data-id="${m.id}" style="padding: 4px 12px; font-size: 0.8rem; font-weight:600;">
-                      ${isAr ? 'معاينة' : 'Preview'}
-                    </button>
+                  <div style="display: flex; gap: 15px; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 10px; width: 100%;">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                      <button class="btn btn-primary db-preview-msg-btn" data-id="${m.id}" style="padding: 4px 12px; font-size: 0.8rem; font-weight:600;">
+                        ${isAr ? 'معاينة' : 'Preview'}
+                      </button>
+                      <span class="db-list-action delete-msg-btn" data-id="${m.id}" style="color:var(--color-accent-3); cursor:pointer; font-size:0.85rem;">
+                        ${isAr ? 'حذف' : 'Purge'}
+                      </span>
+                    </div>
                     <span class="db-list-action toggle-read-btn" data-id="${m.id}" style="cursor:pointer; font-weight:600; font-size:0.85rem;">
                       ${m.read ? (isAr ? 'تمت القراءة' : 'Read') : (isAr ? 'تعليم كمقروء' : 'Mark Read')}
-                    </span>
-                    <span class="db-list-action delete-msg-btn" data-id="${m.id}" style="color:var(--color-accent-3); cursor:pointer; font-size:0.85rem;">
-                      ${isAr ? 'حذف' : 'Purge'}
                     </span>
                   </div>
                 </div>
@@ -479,31 +481,33 @@ window.AetherPages.dashboard = {
           <div class="db-panel">
             <div class="db-list">
               ${dbQuotes.map(q => `
-                <div class="db-list-item">
+                <div class="db-list-item" style="flex-direction: column; align-items: stretch; gap: 12px;">
                   <div class="db-list-details">
                     <span class="db-list-title" style="color: var(--color-accent-1); font-weight:bold;">${q.service_type}</span>
                     <span style="font-size: 0.9rem; color: var(--text-secondary);">${isAr ? 'العميل:' : 'Client:'} ${q.name} | ${q.email}</span>
                     <span class="db-list-meta">${isAr ? 'الصفحات المطلوبة:' : 'Pages Target:'} ${q.pages}</span>
                   </div>
-                  <div style="display: flex; gap: 15px; align-items: center;">
-                    ${q.status === 'new' ? `
-                      <button class="btn btn-secondary db-ack-quote-btn" data-id="${q.id}" style="padding: 4px 10px; font-size: 0.8rem; color: var(--color-accent-1); border-color: var(--color-accent-1); font-weight:600;">
-                        ${isAr ? 'تأكيد الاستلام' : 'Acknowledge'}
+                  <div style="display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; border-top: 1px solid var(--border-color); padding-top: 10px; width: 100%;">
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                      ${q.status === 'new' ? `
+                        <button class="btn btn-secondary db-ack-quote-btn" data-id="${q.id}" style="padding: 4px 10px; font-size: 0.8rem; color: var(--color-accent-1); border-color: var(--color-accent-1); font-weight:600;">
+                          ${isAr ? 'تأكيد الاستلام' : 'Acknowledge'}
+                        </button>
+                      ` : `
+                        <span style="font-size: 0.8rem; font-weight: 700; color: #00ff88; background: rgba(0, 255, 136, 0.1); padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(0, 255, 136, 0.2);">
+                          ${isAr ? '✓ تم الاستلام' : '✓ Acknowledged'}
+                        </span>
+                      `}
+                      <button class="btn btn-primary db-preview-quote-btn" data-id="${q.id}" style="padding: 4px 12px; font-size: 0.8rem; font-weight:600;">
+                        ${isAr ? 'معاينة' : 'Preview'}
                       </button>
-                    ` : `
-                      <span style="font-size: 0.8rem; font-weight: 700; color: #00ff88; background: rgba(0, 255, 136, 0.1); padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(0, 255, 136, 0.2);">
-                        ${isAr ? '✓ تم الاستلام' : '✓ Acknowledged'}
-                      </span>
-                    `}
-                    <button class="btn btn-primary db-preview-quote-btn" data-id="${q.id}" style="padding: 4px 12px; font-size: 0.8rem; font-weight:600;">
-                      ${isAr ? 'معاينة' : 'Preview'}
-                    </button>
-                    <div style="text-align: right; min-width: 90px; margin: 0 10px;">
-                      <div style="font-weight: 800; font-size: 1.25rem; color: var(--color-accent-2);">${q.estimate}</div>
+                      <button class="btn btn-secondary delete-quote-btn" data-id="${q.id}" style="padding: 4px 10px; font-size: 0.8rem; color: var(--color-accent-3); border-color: var(--color-accent-3);">
+                        ${isAr ? 'حذف' : 'Purge'}
+                      </button>
                     </div>
-                    <button class="btn btn-secondary delete-quote-btn" data-id="${q.id}" style="padding: 4px 10px; font-size: 0.8rem; color: var(--color-accent-3); border-color: var(--color-accent-3);">
-                      ${isAr ? 'حذف' : 'Purge'}
-                    </button>
+                    <div style="text-align: right; font-weight: 800; font-size: 1.25rem; color: var(--color-accent-2); font-family: var(--font-en);">
+                      ${q.estimate}
+                    </div>
                   </div>
                 </div>
               `).join('')}
@@ -630,13 +634,13 @@ window.AetherPages.dashboard = {
             <h3 style="margin-bottom: 1.5rem;">${isAr ? 'العملاء النشطين' : 'Active Client Nodes'}</h3>
             <div class="db-list">
               ${dbClients.map(c => `
-                <div class="db-list-item">
+                <div class="db-list-item" style="flex-direction: column; align-items: stretch; gap: 12px;">
                   <div class="db-list-details">
                     <span class="db-list-title" style="font-weight:700;">${c.first_name} ${c.last_name}</span>
                     <span class="db-list-meta" style="color: var(--color-accent-1); font-family: var(--font-en); font-weight: 600;">@${c.username}</span>
                     <span class="db-list-meta" style="color: var(--text-secondary);">${c.email}</span>
                   </div>
-                  <div style="display: flex; gap: 15px; align-items: center;">
+                  <div style="display: flex; gap: 15px; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 10px; width: 100%;">
                     <div style="font-size:0.8rem; color:var(--text-muted); text-align: right;">
                       ${isAr ? 'تاريخ التسجيل:' : 'Joined:'} ${new Date(c.date_joined).toLocaleDateString()}
                     </div>
