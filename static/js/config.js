@@ -3,7 +3,7 @@
 window.AetherConfig = {
   name: 'AetherCore Technologies',
   defaultLang: 'en',
-  defaultTheme: 'dark',
+  defaultTheme: 'light',
   storageThemeKey: 'aethercore-theme',
   storageLangKey: 'aethercore-lang',
   
