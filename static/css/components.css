@@ -404,5 +404,8 @@ select option {
   .container {
     padding: 0 6% !important;
   }
+  .glass-card {
+    padding: 1.5rem !important;
+  }
 }
 

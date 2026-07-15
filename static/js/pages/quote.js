@@ -45,10 +45,10 @@ window.AetherPages.quote = {
         <div class="grid-2" style="gap: 3rem; margin-bottom: 5rem;">
           <!-- Step Wizard Form -->
           <div class="reveal-left">
-            <div class="glass-card glow-purple" style="padding: 2.5rem;">
+            <div class="glass-card glow-purple">
               
               <!-- Step Indicators -->
-              <div style="display: flex; justify-content: space-between; margin-bottom: 2.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+              <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 2.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
                 <span id="step-tab-1" class="badge" style="font-size: 0.8rem;">${isAr ? '1. التصنيف' : '1. Architecture'}</span>
                 <span id="step-tab-2" class="badge badge-cyan" style="font-size: 0.8rem; opacity: 0.5;">${isAr ? '2. الميزات' : '2. Specifications'}</span>
                 <span id="step-tab-3" class="badge badge-pink" style="font-size: 0.8rem; opacity: 0.5;">${isAr ? '3. التواصل' : '3. Credentials'}</span>
@@ -176,7 +176,7 @@ window.AetherPages.quote = {
 
           <!-- Result Summary Board -->
           <div class="reveal-right" style="display: flex; flex-direction: column; justify-content: center;">
-            <div class="glass-card glow-cyan" style="padding: 2.5rem; text-align: center;">
+            <div class="glass-card glow-cyan" style="text-align: center;">
               <h3 style="font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 1rem;">
                 ${isAr ? 'ملخص ميزانية الواجهة المقدرة' : 'Estimate Summary Node'}
               </h3>

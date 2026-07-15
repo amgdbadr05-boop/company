@@ -283,7 +283,7 @@ window.AetherPages.dashboard = {
           }
         })
         .catch(err => console.error("Silent dashboard polling failed:", err));
-      }, 5000);
+      }, 3000);
     }
 
     // Operational Sections

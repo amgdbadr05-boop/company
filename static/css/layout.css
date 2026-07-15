@@ -196,6 +196,8 @@
   min-height: calc(100vh - 80px);
   position: relative;
   z-index: 1;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 /* Hero Section Styles */
