@@ -496,7 +496,7 @@
     margin-left: 15px !important;
   }
   
-  #nav-client-logout-btn {
+  #nav-client-logout-btn, #nav-whatsapp-btn {
     display: none !important;
   }
   
