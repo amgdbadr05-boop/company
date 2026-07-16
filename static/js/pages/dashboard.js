@@ -704,7 +704,10 @@ window.AetherPages.dashboard = {
             const category = document.getElementById('p-category').value;
             const library = document.getElementById('p-library').value;
             const desc = document.getElementById('p-desc').value;
-            const link = document.getElementById('p-link').value;
+            let link = document.getElementById('p-link').value.trim();
+            if (link && !/^https?:\/\//i.test(link)) {
+              link = 'https://' + link;
+            }
             const statusBox = document.getElementById('p-upload-status');
 
             let catLabel = 'HTML, CSS, JS';

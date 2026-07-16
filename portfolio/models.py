@@ -31,7 +31,15 @@ class Project(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            base_slug = slugify(self.title, allow_unicode=True)
+            if not base_slug:
+                base_slug = "project"
+            slug = base_slug
+            counter = 1
+            while Project.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
         # Ensure default badge if not defined
         if not self.badge:
             cat_label = dict(self.CATEGORY_CHOICES).get(self.category, 'HTML/CSS/JS')
