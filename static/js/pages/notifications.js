@@ -131,7 +131,7 @@ window.AetherPages.notifications = {
                   </div>
                   <div>
                     <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">${isAr ? 'تاريخ التقديم' : 'Submitted on'}</span>
-                    <span style="font-size: 1.05rem; font-weight: 600; color: var(--text-secondary);">${new Date(q.created_at || Date.now()).toLocaleDateString()}</span>
+                    <span style="font-size: 1.05rem; font-weight: 600; color: var(--text-secondary);">${new Date(q.created_date || Date.now()).toLocaleDateString()}</span>
                   </div>
                 </div>
 

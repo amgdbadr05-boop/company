@@ -17,6 +17,6 @@ class ServiceRequestViewSet(viewsets.ModelViewSet):
     def my_requests(self, request):
         if not request.user.is_authenticated:
             return Response([])
-        queryset = self.get_queryset().filter(email=request.user.email)
+        queryset = self.get_queryset().filter(email__iexact=request.user.email)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)

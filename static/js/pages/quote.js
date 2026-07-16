@@ -446,5 +446,19 @@ window.AetherPages.quote = {
     }
 
     calculateWizardPrice();
+
+    // Prefill logged-in client credentials automatically to guarantee exact match with request.user.email
+    const wizardName = document.getElementById('wizard-name');
+    const wizardEmail = document.getElementById('wizard-email');
+    if (window.AetherClientLoggedIn === true) {
+      if (wizardName && window.AetherClientName) {
+        wizardName.value = window.AetherClientName;
+        wizardName.setAttribute('readonly', 'true');
+      }
+      if (wizardEmail && window.AetherClientEmail) {
+        wizardEmail.value = window.AetherClientEmail;
+        wizardEmail.setAttribute('readonly', 'true');
+      }
+    }
   }
 };
