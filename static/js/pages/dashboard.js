@@ -371,14 +371,26 @@ window.AetherPages.dashboard = {
             <div class="db-panel glow-cyan">
               <h3 style="margin-bottom: 1.5rem;">${isAr ? 'إضافة عمل جديد للمعرض' : 'Add New Portfolio Project'}</h3>
               <form id="db-portfolio-form">
-                <div class="form-group">
-                  <label class="form-label">${isAr ? 'عنوان المشروع' : 'Project Title'}</label>
-                  <input type="text" id="p-title" class="form-control" required placeholder="e.g. Zenith E-Commerce">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 1.2rem;">
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" style="font-weight:600;">${isAr ? 'عنوان المشروع (بالعربية)' : 'Project Title (AR)'}</label>
+                    <input type="text" id="p-title-ar" class="form-control" required placeholder="مثال: متجر زينث">
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" style="font-weight:600;">${isAr ? 'عنوان المشروع (بالإنجليزية)' : 'Project Title (EN)'}</label>
+                    <input type="text" id="p-title-en" class="form-control" required placeholder="e.g. Zenith E-Commerce">
+                  </div>
                 </div>
-                
-                <div class="form-group">
-                  <label class="form-label">${isAr ? 'اسم العميل' : 'Client / Brand'}</label>
-                  <input type="text" id="p-client" class="form-control" required placeholder="e.g. Zenith Inc">
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 1.2rem;">
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" style="font-weight:600;">${isAr ? 'اسم العميل (بالعربية)' : 'Client / Brand (AR)'}</label>
+                    <input type="text" id="p-client-ar" class="form-control" required placeholder="مثال: شركة زينث">
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" style="font-weight:600;">${isAr ? 'اسم العميل (بالإنجليزية)' : 'Client / Brand (EN)'}</label>
+                    <input type="text" id="p-client-en" class="form-control" required placeholder="e.g. Zenith Inc">
+                  </div>
                 </div>
                 
                 <div class="form-group">
@@ -408,8 +420,12 @@ window.AetherPages.dashboard = {
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label">${isAr ? 'تفاصيل ووصف المشروع' : 'Short Description'}</label>
-                  <textarea id="p-desc" class="form-control" rows="3" required placeholder="Description..." style="resize:none;"></textarea>
+                  <label class="form-label" style="font-weight:600;">${isAr ? 'وصف المشروع (بالعربية)' : 'Description (AR)'}</label>
+                  <textarea id="p-desc-ar" class="form-control" rows="2" required placeholder="الوصف بالعربية..." style="resize:none;"></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" style="font-weight:600;">${isAr ? 'وصف المشروع (بالإنجليزية)' : 'Description (EN)'}</label>
+                  <textarea id="p-desc-en" class="form-control" rows="2" required placeholder="Description in English..." style="resize:none;"></textarea>
                 </div>
 
                 <div id="p-upload-status" style="margin-bottom: 1rem; display:none; color: var(--color-accent-1); font-size: 0.9rem; font-weight:600;"></div>
@@ -422,17 +438,29 @@ window.AetherPages.dashboard = {
             <div class="db-panel">
               <h3 style="margin-bottom: 1.5rem;">${isAr ? 'المشاريع المنشورة حالياً' : 'Currently Active Projects'}</h3>
               <div class="db-list" id="db-portfolio-list-wrapper">
-                ${dbProjects.map((item) => `
-                  <div class="db-list-item">
-                    <div class="db-list-details">
-                      <span class="db-list-title" style="color:var(--color-accent-1);">${item.title}</span>
-                      <span class="db-list-meta">${item.badge} | ${item.client}</span>
+                ${dbProjects.map((item) => {
+                  const parseLang = (str) => {
+                    if (!str) return '';
+                    if (str.includes('|')) {
+                      const parts = str.split('|');
+                      return isAr ? parts[0].trim() : parts[1].trim();
+                    }
+                    return str;
+                  };
+                  return `
+                    <div class="db-list-item" style="flex-direction: column; align-items: stretch; gap: 12px;">
+                      <div class="db-list-details">
+                        <span class="db-list-title" style="color:var(--color-accent-1); font-weight:700;">${parseLang(item.title)}</span>
+                        <span class="db-list-meta">${item.badge} | ${parseLang(item.client)}</span>
+                      </div>
+                      <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 10px; width: 100%;">
+                        <button class="btn btn-secondary db-delete-portfolio-btn" data-id="${item.id}" style="padding: 4px 10px; font-size: 0.8rem; color: var(--color-accent-3); border-color: var(--color-accent-3);">
+                          ${isAr ? 'حذف' : 'Purge'}
+                        </button>
+                      </div>
                     </div>
-                    <button class="btn btn-secondary db-delete-portfolio-btn" data-id="${item.id}" style="padding: 4px 10px; font-size: 0.8rem; color: var(--color-accent-3); border-color: var(--color-accent-3);">
-                      ${isAr ? 'حذف' : 'Purge'}
-                    </button>
-                  </div>
-                `).join('')}
+                  `;
+                }).join('')}
                 ${dbProjects.length === 0 ? `<p style="text-align: center; color: var(--text-muted); padding: 2rem 0;">${isAr ? 'معرض الأعمال فارغ حالياً.' : 'No projects active.'}</p>` : ''}
               </div>
             </div>
@@ -699,11 +727,19 @@ window.AetherPages.dashboard = {
         if (form) {
           form.addEventListener('submit', (e) => {
             e.preventDefault();
-            const title = document.getElementById('p-title').value;
-            const client = document.getElementById('p-client').value;
+            const titleAr = document.getElementById('p-title-ar').value.trim();
+            const titleEn = document.getElementById('p-title-en').value.trim();
+            const clientAr = document.getElementById('p-client-ar').value.trim();
+            const clientEn = document.getElementById('p-client-en').value.trim();
+            const descAr = document.getElementById('p-desc-ar').value.trim();
+            const descEn = document.getElementById('p-desc-en').value.trim();
+
+            const title = `${titleAr} | ${titleEn}`;
+            const client = `${clientAr} | ${clientEn}`;
+            const desc = `${descAr} | ${descEn}`;
+
             const category = document.getElementById('p-category').value;
             const library = document.getElementById('p-library').value;
-            const desc = document.getElementById('p-desc').value;
             let link = document.getElementById('p-link').value.trim();
             if (link && !/^https?:\/\//i.test(link)) {
               link = 'https://' + link;

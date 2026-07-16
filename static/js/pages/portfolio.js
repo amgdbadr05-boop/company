@@ -92,11 +92,19 @@ window.AetherPages.portfolio = {
 
       grid.style.display = 'grid';
       grid.innerHTML = filtered.map((item, index) => {
-        // default mapping values
+        const parseLangString = (str) => {
+          if (!str) return '';
+          if (str.includes('|')) {
+            const parts = str.split('|');
+            return isAr ? parts[0].trim() : parts[1].trim();
+          }
+          return str;
+        };
+
         const badge = item.badge || 'React & HTML';
-        const client = item.client || 'AetherCore Client';
-        const title = item.title || 'Untitled Project';
-        const desc = item.desc || 'No description provided.';
+        const client = parseLangString(item.client) || 'AetherCore Client';
+        const title = parseLangString(item.title) || 'Untitled Project';
+        const desc = parseLangString(item.description) || (isAr ? 'لا يوجد وصف متوفر.' : 'No description provided.');
         const glowClass = item.glow || 'glow-cyan';
         const imageUrl = item.image_url || (item.image ? item.image.trim() : '');
 
